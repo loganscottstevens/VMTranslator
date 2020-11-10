@@ -14,7 +14,7 @@ namespace VMTranslator
         static void Main()
         {
             Regex assemblyFileRegex = new Regex("\\w+\\.asm");
-            string filePath = @"C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\test.vm";
+            string filePath = @"C:\Users\logan\Documents\School\CS220\nand2tetris\nand2tetris\projects\07\MemoryAccess\BasicTest\BasicTest.vm";
 
             // in case of one file argument, this turns it into a directory
             if (assemblyFileRegex.IsMatch(filePath))
@@ -45,6 +45,8 @@ namespace VMTranslator
                 while (parser.HasMoreCommands())
                 {
                     parser.Advance();
+                    Console.WriteLine(parser.ToString());
+                    Console.ReadLine();
                 }
             }
         }
