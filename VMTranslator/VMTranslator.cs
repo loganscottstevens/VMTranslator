@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Text.RegularExpressions;
 
 namespace VMTranslator
@@ -12,22 +11,40 @@ namespace VMTranslator
         private Parser parser;
 
         // METHODS
-        static void Main(string[] args)
+        static void Main()
         {
-            CodeWriter codeWriter = new CodeWriter("test.asm");
             Regex assemblyFileRegex = new Regex("\\w+\\.asm");
-            string directoryOrFile = @"C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\test.asm";
-            FileAttributes attributes = File.GetAttributes(directoryOrFile);
-            if (attributes == FileAttributes.Directory)
+            string filePath = @"C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\test.vm";
+
+            // in case of one file argument, this turns it into a directory
+            if (assemblyFileRegex.IsMatch(filePath))
             {
-                string[] files = Directory.GetFiles(directoryOrFile, "*.vm");
-                foreach (string file in files)
+                filePath = Directory.GetCurrentDirectory();
+                Console.WriteLine(filePath);
+                Console.ReadLine();
+            }
+
+            try
+            {
+                //in case directory is a file, this gets it's directory
+                if (File.GetAttributes(filePath) != FileAttributes.Directory)
                 {
-                    Parser parser = new Parser(file);
-                    while (parser.HasMoreCommands())
-                    {
-                        parser.Advance();
-                    }
+                    filePath = filePath.Remove(filePath.LastIndexOf('\\'));
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("No such file or directory: " + filePath);
+                Environment.Exit(-1);
+            }
+
+            string[] files = Directory.GetFiles(filePath, "*.vm");
+            foreach (string file in files)
+            {
+                Parser parser = new Parser(file);
+                while (parser.HasMoreCommands())
+                {
+                    parser.Advance();
                 }
             }
         }
