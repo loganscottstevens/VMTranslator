@@ -8,30 +8,13 @@ namespace VMTranslator
 {
     class Parser
     {
-
-
-        // PRIVATE FIELDS
-        private string arg1;
-        private string arg2;
-        private int arg3;
         private string currentLine;
         private StreamReader inputFile;
 
         // PROPERTIES
-        public CommandType CommandType { get; set; }
-        public string Arg1
-        {
-            get => arg1;
-        }
-
-        public string Arg2 
-        { 
-            get => arg2; 
-        }
-        public int Arg3
-        {
-            get => arg3;
-        }
+        public CommandType CommandType { get; private set; }
+        public string Arg1 { get; private set; }
+        public int Arg2 { get; private set; }
 
         // STATIC VARIABLES
         // Regular expression for any string which is either a comment or white space
@@ -66,15 +49,14 @@ namespace VMTranslator
                 if (i == 0)
                 {
                     CommandType = LookupCommandType(args[i]);
-                    arg1 = args[i];
                 }
                 else if (i == 1)
                 {
-                    arg2 = args[i];
+                    Arg1 = args[i];
                 }
                 else if (i == 2)
                 {
-                    arg3 = int.Parse(args[i]);
+                    Arg2 = int.Parse(args[i]);
                 }
             }
         }
@@ -86,12 +68,11 @@ namespace VMTranslator
 
         public string ToString()
         {
-            return 
+            return
                 $"CurrentLine = {currentLine}\n" +
                 $"CommandType = {CommandType}\n" +
                 $"Arg1 = {Arg1}\n" +
-                $"Arg2 = {Arg2}\n" +
-                $"Arg3 = {Arg3}\n";
+                $"Arg2 = {Arg2}\n";
         }
 
         public static CommandType LookupCommandType(string command)

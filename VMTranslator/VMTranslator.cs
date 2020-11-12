@@ -6,10 +6,6 @@ namespace VMTranslator
 {
     class VMTranslator
     {
-        // FIELDS
-        private CodeWriter codeWriter;
-        private Parser parser;
-
         // METHODS
         static void Main()
         {
@@ -38,6 +34,8 @@ namespace VMTranslator
                 Environment.Exit(-1);
             }
 
+            CodeWriter codeWriter = new CodeWriter(filePath + "translation.asm");
+
             string[] files = Directory.GetFiles(filePath, "*.vm");
             foreach (string file in files)
             {
@@ -47,8 +45,33 @@ namespace VMTranslator
                     parser.Advance();
                     Console.WriteLine(parser.ToString());
                     Console.ReadLine();
+                    switch (parser.CommandType)
+                    {
+                        case CommandType.C_ARITHMETIC:
+                            codeWriter.WriteArithmetic(parser.Arg1);
+                            break;
+                        case CommandType.C_PUSH:
+                        case CommandType.C_POP:
+                            codeWriter.WritePushPop(parser.CommandType, parser.Arg1, parser.Arg2);
+                            break;
+                        case CommandType.C_LABEL:
+                            break;
+                        case CommandType.C_GOTO:
+                            break;
+                        case CommandType.C_IF:
+                            break;
+                        case CommandType.C_FUNCTION:
+                            break;
+                        case CommandType.C_RETURN:
+                            break;
+                        case CommandType.C_CALL:
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
+            codeWriter.Close();
         }
     }
 }
