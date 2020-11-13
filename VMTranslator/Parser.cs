@@ -44,19 +44,29 @@ namespace VMTranslator
             } while (currentLine == string.Empty);
 
             string[] args = currentLine.Split(" ");
-            for (int i = 0; i < args.Length; i++)
+            if (args.Length == 1)
             {
-                if (i == 0)
+                CommandType = CommandType.C_ARITHMETIC;
+                Arg1 = args[0];
+                Arg2 = -1;
+
+            }
+            else
+            {
+                for (int i = 0; i < args.Length; i++)
                 {
-                    CommandType = LookupCommandType(args[i]);
-                }
-                else if (i == 1)
-                {
-                    Arg1 = args[i];
-                }
-                else if (i == 2)
-                {
-                    Arg2 = int.Parse(args[i]);
+                    if (i == 0)
+                    {
+                        CommandType = LookupCommandType(args[i]);
+                    }
+                    else if (i == 1)
+                    {
+                        Arg1 = args[i];
+                    }
+                    else if (i == 2)
+                    {
+                        Arg2 = int.Parse(args[i]);
+                    }
                 }
             }
         }

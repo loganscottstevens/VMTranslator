@@ -11,7 +11,6 @@ namespace VMTranslator
         {
             Regex assemblyFileRegex = new Regex("\\w+\\.asm");
             string filePath = @"C:\Users\logan\Documents\School\CS220\nand2tetris\nand2tetris\projects\07\MemoryAccess\BasicTest\BasicTest.vm";
-
             // in case of one file argument, this turns it into a directory
             if (assemblyFileRegex.IsMatch(filePath))
             {
@@ -34,7 +33,8 @@ namespace VMTranslator
                 Environment.Exit(-1);
             }
 
-            CodeWriter codeWriter = new CodeWriter(filePath + "translation.asm");
+            CodeWriter codeWriter = new CodeWriter(filePath + @"\translation.asm");
+            Console.WriteLine(codeWriter.outputFileDir);
 
             string[] files = Directory.GetFiles(filePath, "*.vm");
             foreach (string file in files)
@@ -43,8 +43,8 @@ namespace VMTranslator
                 while (parser.HasMoreCommands())
                 {
                     parser.Advance();
-                    Console.WriteLine(parser.ToString());
-                    Console.ReadLine();
+                    //Console.WriteLine(parser.ToString());
+                    //Console.ReadLine();
                     switch (parser.CommandType)
                     {
                         case CommandType.C_ARITHMETIC:
@@ -71,6 +71,7 @@ namespace VMTranslator
                     }
                 }
             }
+            codeWriter.TerminateWithLoop();
             codeWriter.Close();
         }
     }

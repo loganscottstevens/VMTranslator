@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace VMTranslator
 {
@@ -9,11 +8,14 @@ namespace VMTranslator
     {
         // FIELDS
         private StreamWriter outputFile;
+        public string outputFileDir { get; private set; }
 
         // CONSTRUCTORS
         public CodeWriter(string fileName)
         {
+            outputFileDir = fileName;
             outputFile = new StreamWriter(fileName);
+            MapMemorySegments();
         }
 
         // METHODS
@@ -24,6 +26,26 @@ namespace VMTranslator
                 case "add":
                     outputFile.WriteLine
                         (
+                        "// ADD\n" +
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M\n" +
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M+D\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=D\n" +
+                        "@SP\n" +
+                        "M=M+1"
+                        );
+                    break;
+                case "sub":
+                    outputFile.WriteLine
+                        (
+                        "// SUB\n" +
                         "@SP\n" +
                         "M=M-1\n" +
                         "A=M\n" +
@@ -36,16 +58,18 @@ namespace VMTranslator
                         "A=M\n" +
                         "M=D\n" +
                         "@SP\n" +
-                        "M=M-1"
+                        "M=M+1"
                         );
                     break;
                 default:
+                    Console.WriteLine("ErRoR:::::: default has been reached in the write arithmetic method.");
                     break;
             }
         }
 
         public void WritePushPop(CommandType commandType, string segment, int index)
         {
+            outputFile.WriteLine($"// {commandType} {segment} {index}");
             if (commandType == CommandType.C_PUSH)
             {
                 switch (segment)
@@ -63,7 +87,43 @@ namespace VMTranslator
                         );
 
                         break;
+                    case "temp":
+                        outputFile.WriteLine
+                            (
+                            "@" + LookupSegmentASM(segment));
+                        for (int i = 0; i < index; i++)
+                        {
+                            outputFile.WriteLine("A=A+1");
+                        }
+                        outputFile.WriteLine
+                            (
+                            "D=M\n" +
+                            "@SP\n" +
+                            "A=M\n" +
+                            "M=D\n" +
+                            "@SP\n" +
+                            "M=M+1"
+                            );
+                        break;
                     default:
+                        outputFile.WriteLine
+                            (
+                            "@" + LookupSegmentASM(segment) + "\n" +
+                            "A=M"
+                            );
+                        for (int i = 0; i < index; i++)
+                        {
+                            outputFile.WriteLine("A=A+1");
+                        }
+                        outputFile.WriteLine
+                            (
+                            "D=M\n" +
+                            "@SP\n" +
+                            "A=M\n" +
+                            "M=D\n" +
+                            "@SP\n" +
+                            "M=M+1"
+                            );
                         break;
                 }
             }
@@ -71,18 +131,24 @@ namespace VMTranslator
             {
                 outputFile.WriteLine
                 (
+
                     "@SP\n" +
                     "M=M-1\n" +
                     "A=M\n" +
                     "D=M\n" +
-                    "@" + LookupSegmentASM(segment) + "\n" +
-                    "A=M"
+                    "@" + LookupSegmentASM(segment)
                 );
+                if (segment != "temp")
+                {
+                    outputFile.WriteLine("A=M");
+                }
+                    
+                
                 for (int i = 0; i < index; i++)
                 {
                     outputFile.WriteLine
                     (
-                        "M=M+1"
+                        "A=A+1"
                     );
                 }
                 outputFile.WriteLine
@@ -93,13 +159,57 @@ namespace VMTranslator
             }
         }
 
+        public void TerminateWithLoop()
+        {
+            outputFile.WriteLine(
+                "// INFINITE LOOP\n" +
+                "(LOOP)\n" +
+                "@LOOP\n" +
+                "0;JMP");
+        }
+
         private static string LookupSegmentASM(string segment)
         {
-                new Dictionary<string, string>()
+            new Dictionary<string, string>()
                 {
-                    {"local", "LCL" }
-                }.TryGetValue(segment,out string value);
+                    {"local", "LCL" },
+                    {"argument", "ARG" },
+                    {"this", "THIS" },
+                    {"that", "THAT" },
+                    {"temp", "R5" }
+                }.TryGetValue(segment, out string value);
             return value;
+        }
+
+        private void MapMemorySegments()
+        {
+            outputFile.WriteLine(
+                "// Map SP\n" +
+                "@256\n" +
+                "D=A\n" +
+                "@SP\n" +
+                "M=D\n" +
+                "// Map LCL\n" +
+                "@300\n" +
+                "D=A\n" +
+                "@LCL\n" +
+                "M=D\n" +
+                "// Map ARG\n" +
+                "@400\n" +
+                "D=A\n" +
+                "@ARG\n" +
+                "M=D\n" +
+                "// Map THIS\n" +
+                "@3000\n" +
+                "D=A\n" +
+                "@THIS\n" +
+                "M=D\n" +
+                "// Map THAT\n" +
+                "@3010\n" +
+                "D=A\n" +
+                "@THAT\n" +
+                "M=D"
+                );
         }
 
         public void Close()
