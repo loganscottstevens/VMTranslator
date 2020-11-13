@@ -8,12 +8,14 @@ namespace VMTranslator
     {
         // FIELDS
         private StreamWriter outputFile;
-        public string outputFileDir { get; private set; }
+        private int LabelIndex { get; set; } = 0;
+        public string OutputFileDir { get; private set; }
+        public string FileName { get; set; }
 
         // CONSTRUCTORS
         public CodeWriter(string fileName)
         {
-            outputFileDir = fileName;
+            OutputFileDir = fileName;
             outputFile = new StreamWriter(fileName);
             MapMemorySegments();
         }
@@ -61,6 +63,139 @@ namespace VMTranslator
                         "M=M+1"
                         );
                     break;
+                case "eq":
+                    outputFile.WriteLine(
+                    "@SP\n" +
+                    "M=M-1\n" +
+                    "A=M\n" +
+                    "D=M\n" +
+                    "@SP\n" +
+                    "M=M-1\n" +
+                    "A=M\n" +
+                    "D=M-D\n" +
+                    $"@TRUE{LabelIndex}\n" +
+                    "D;JEQ\n" +
+                    "@SP\n" +
+                    "A=M\n" +
+                    "M=0\n" +
+                    $"@ENDEQ{LabelIndex}\n" +
+                    "0;JMP\n" +
+                    $"(TRUE{LabelIndex})\n" +
+                    "@SP\n" +
+                    "A=M\n" +
+                    "M=-1\n" +
+                    $"(ENDEQ{LabelIndex})\n" +
+                    "@SP\n" +
+                    "M=M+1"
+                        );
+                    LabelIndex++;
+                    break;
+                case "gt":
+                    outputFile.WriteLine(
+                    "@SP\n" +
+                    "M=M-1\n" +
+                    "A=M\n" +
+                    "D=M\n" +
+                    "@SP\n" +
+                    "M=M-1\n" +
+                    "A=M\n" +
+                    "D=M-D\n" +
+                    $"@TRUE{LabelIndex}\n" +
+                    "D;JGT\n" +
+                    "@SP\n" +
+                    "A=M\n" +
+                    "M=0\n" +
+                    $"@ENDEQ{LabelIndex}\n" +
+                    "0;JMP\n" +
+                    $"(TRUE{LabelIndex})\n" +
+                    "@SP\n" +
+                    "A=M\n" +
+                    "M=-1\n" +
+                    $"(ENDEQ{LabelIndex})\n" +
+                    "@SP\n" +
+                    "M=M+1"
+                        );
+                    LabelIndex++;
+                    break;
+                case "lt":
+                    outputFile.WriteLine(
+                    "@SP\n" +
+                    "M=M-1\n" +
+                    "A=M\n" +
+                    "D=M\n" +
+                    "@SP\n" +
+                    "M=M-1\n" +
+                    "A=M\n" +
+                    "D=M-D\n" +
+                    $"@TRUE{LabelIndex}\n" +
+                    "D;JLT\n" +
+                    "@SP\n" +
+                    "A=M\n" +
+                    "M=0\n" +
+                    $"@ENDEQ{LabelIndex}\n" +
+                    "0;JMP\n" +
+                    $"(TRUE{LabelIndex})\n" +
+                    "@SP\n" +
+                    "A=M\n" +
+                    "M=-1\n" +
+                    $"(ENDEQ{LabelIndex})\n" +
+                    "@SP\n" +
+                    "M=M+1"
+                        );
+                    LabelIndex++;
+                    break;
+                case "neg":
+                    outputFile.WriteLine(
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "M=-M\n" +
+                        "@SP\n" +
+                        "M=M+1\n"
+                    );
+                    break;
+                case "and":
+                    outputFile.WriteLine(
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M\n" +
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=D&M\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=D\n" +
+                        "@SP\n" +
+                        "M=M+1");
+                    break;
+                case "or":
+                    outputFile.WriteLine(
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M\n" +
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=D|M\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=D\n" +
+                        "@SP\n" +
+                        "M=M+1");
+                    break;
+                case "not":
+                    outputFile.WriteLine(
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "M=!M\n" +
+                        "@SP\n" +
+                        "M=M+1\n"
+                    );
+                    break;
                 default:
                     Console.WriteLine("ErRoR:::::: default has been reached in the write arithmetic method.");
                     break;
@@ -88,6 +223,7 @@ namespace VMTranslator
 
                         break;
                     case "temp":
+                    case "pointer":
                         outputFile.WriteLine
                             (
                             "@" + LookupSegmentASM(segment));
@@ -104,6 +240,17 @@ namespace VMTranslator
                             "@SP\n" +
                             "M=M+1"
                             );
+                        break;
+                    case "static":
+                        outputFile.WriteLine(
+                            $"@{FileName}.{index}\n" +
+                            "D=M\n" +
+                            "@SP\n" +
+                            "A=M\n" +
+                            "M=D\n" +
+                            "@SP\n" +
+                            "M=M+1"
+                              );
                         break;
                     default:
                         outputFile.WriteLine
@@ -129,27 +276,42 @@ namespace VMTranslator
             }
             else     // CommandType == C_POP
             {
-                outputFile.WriteLine
-                (
+                if (segment != "static")
+                {
+                    outputFile.WriteLine
+                    (
 
                     "@SP\n" +
                     "M=M-1\n" +
                     "A=M\n" +
                     "D=M\n" +
                     "@" + LookupSegmentASM(segment)
-                );
-                if (segment != "temp")
-                {
-                    outputFile.WriteLine("A=M");
+                    );
                 }
-                    
-                
-                for (int i = 0; i < index; i++)
+                else
                 {
                     outputFile.WriteLine
                     (
-                        "A=A+1"
+                    "@SP\n" +
+                    "M=M-1\n" +
+                    "A=M\n" +
+                    "D=M\n" +
+                    $"@{FileName}.{index}"
                     );
+                }
+                if (segment != "temp" && segment != "pointer" && segment != "static")
+                {
+                    outputFile.WriteLine("A=M");
+                }
+                if (segment != "static")
+                {
+                    for (int i = 0; i < index; i++)
+                    {
+                        outputFile.WriteLine
+                        (
+                            "A=A+1"
+                        );
+                    }
                 }
                 outputFile.WriteLine
                 (
@@ -176,7 +338,8 @@ namespace VMTranslator
                     {"argument", "ARG" },
                     {"this", "THIS" },
                     {"that", "THAT" },
-                    {"temp", "R5" }
+                    {"temp", "R5" },
+                    {"pointer", "THIS" }
                 }.TryGetValue(segment, out string value);
             return value;
         }

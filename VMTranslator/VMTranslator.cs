@@ -9,22 +9,33 @@ namespace VMTranslator
         // METHODS
         static void Main()
         {
-            Regex assemblyFileRegex = new Regex("\\w+\\.asm");
-            string filePath = @"C:\Users\logan\Documents\School\CS220\nand2tetris\nand2tetris\projects\07\MemoryAccess\BasicTest\BasicTest.vm";
+            Regex vMFileRegex = new Regex("\\w+\\.vm");
+            string filePath =
+                @"C:\Users\logan\Desktop\LogansTest\test1.vm";
+            string fileName = "noname";
             // in case of one file argument, this turns it into a directory
-            if (assemblyFileRegex.IsMatch(filePath))
+            Console.WriteLine(Path.GetFileName(filePath));
+            Console.ReadLine();
+            if (vMFileRegex.IsMatch(filePath))
             {
                 filePath = Directory.GetCurrentDirectory();
-                Console.WriteLine(filePath);
+                Console.WriteLine("regex match" + filePath);
                 Console.ReadLine();
             }
 
+
             try
             {
-                //in case directory is a file, this gets it's directory
+                //in case directory is a file, this gets its directory
                 if (File.GetAttributes(filePath) != FileAttributes.Directory)
                 {
+                    fileName = Path.GetFileName(filePath) + ".asm";
+                    //fileName = filePath.Remove(filePath.LastIndexOf('.')).Substring(filePath.LastIndexOf('\\') + 1) + ".asm";
                     filePath = filePath.Remove(filePath.LastIndexOf('\\'));
+                }
+                else
+                {
+                    fileName = Path.GetFileName(filePath) + ".asm";
                 }
             }
             catch (FileNotFoundException)
@@ -33,12 +44,13 @@ namespace VMTranslator
                 Environment.Exit(-1);
             }
 
-            CodeWriter codeWriter = new CodeWriter(filePath + @"\translation.asm");
-            Console.WriteLine(codeWriter.outputFileDir);
+            CodeWriter codeWriter = new CodeWriter(filePath + @$"\{fileName}");
+            Console.WriteLine(codeWriter.OutputFileDir);
 
             string[] files = Directory.GetFiles(filePath, "*.vm");
             foreach (string file in files)
             {
+                codeWriter.FileName = Path.GetFileNameWithoutExtension(file);
                 Parser parser = new Parser(file);
                 while (parser.HasMoreCommands())
                 {
