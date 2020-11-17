@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VMTranslator</name>
+    </assembly>
+    <members>
+        <member name="M:VMTranslator.CodeWriter.WriteArithmetic(System.String)">
+            <summary>
+            Description: Writes the vm arithmetic command in symbolic Hack assembly code<br/>
+            Precondition: Must be initialized<br/>
+            Postcondition: Arithmetic is written to output .asm file
+            </summary>
+            <param name="command"></param>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.WritePushPop(VMTranslator.CommandType,System.String,System.Int32)">
+            <summary>
+            Description: Writes the vm push or pop command in symbolic Hack assembly code<br/>
+            Precondition: Must be initialized<br/>
+            Postcondition: The push/pop logic is written to output .asm file
+            </summary>
+            <param name="commandType"></param>
+            <param name="segment"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.Close">
+            <summary>
+            Description: Closes codewriter<br/>
+            Precondition: Must be initialized<br/>
+            Postcondition: Output streamwriter is closed
+            </summary>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.LookupSegmentASM(System.String)">
+            <summary>
+            Description: Looks up the corresponding segment hack symbol<br/>
+            Precondition: None<br/>
+            Postcondition: Hack symbol is looked up
+            </summary>
+            <param name="segment"></param>
+            <returns>Hack symbol corresponding to given vm segment</returns>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.MapMemorySegments">
+            <summary>
+            Description: Maps the memory segments to particular base addresses in the beginning of the output asm file<br/>
+            Precondition: Must be initialized<br/>
+            Postcondition: Memory segments are mapped to output file
+            </summary>
+        </member>
+        <member name="T:VMTranslator.CommandType">
+            <summary>
+            Helpful enum to help with command types for conditional operations
+            </summary>
+        </member>
+        <member name="M:VMTranslator.Parser.Advance">
+            <summary>
+            Description: Advances parser by one line in the input file<br/>
+            Precondition: Parser has been initialized with a valid filepath to .vm file<br/>
+            Postcondition: Properties are updated<br/>
+            </summary>
+        </member>
+        <member name="M:VMTranslator.Parser.HasMoreCommands">
+            <summary>
+            Description: Determines if input file has more lines to parse<br/>
+            Precondition: InputFile in not null<br/>
+            Postcondition: End of file can be determined<br/>
+            </summary>
+            <returns>True if there are more commands in input file</returns>
+        </member>
+        <member name="M:VMTranslator.Parser.ToString">
+            <summary>
+            Description: Shows parser's current state as a string<br/>
+            Precondition: A parser must be instantiated<br/>
+            Postcondition: A string representation is returned<br/>
+            </summary>
+            <returns>string of the current command's lexical elements</returns>
+        </member>
+        <member name="M:VMTranslator.Parser.LookupCommandType(System.String)">
+            <summary>
+            Description: Looks up command type from vm file command segment<br/>
+            Precondition: A parser must be instantiated<br/>
+            Postcondition: A CommandType is returned<br/>
+            </summary>
+            <param name="command"></param>
+            <returns>CommandType enumeration of given string</returns>
+        </member>
+    </members>
+</doc>

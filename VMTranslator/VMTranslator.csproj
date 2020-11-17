@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\VMTranslator.xml</DocumentationFile>
+  </PropertyGroup>
+
 </Project>
