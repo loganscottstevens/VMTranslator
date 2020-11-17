@@ -1,4 +1,9 @@
-﻿using System;
+﻿#region Author Info
+// ===============================
+// AUTHOR          :Logan Stevens
+// CREATE DATE     :11/9/20
+//================================ 
+#endregion
 using System.Collections.Generic;
 using System.IO;
 
@@ -6,21 +11,29 @@ namespace VMTranslator
 {
     class CodeWriter
     {
-        // FIELDS
-        private StreamWriter outputFile;
+        #region Properties
+        private StreamWriter outputFile { get; set; }
         private int LabelIndex { get; set; } = 0;
         public string OutputFileDir { get; private set; }
         public string FileName { get; set; }
+        #endregion
 
-        // CONSTRUCTORS
+        #region Constructors
         public CodeWriter(string fileName)
         {
             OutputFileDir = fileName;
             outputFile = new StreamWriter(fileName);
             MapMemorySegments();
         }
+        #endregion
 
-        // METHODS
+        #region Public Methods
+        /// <summary>
+        /// Description: Writes the vm arithmetic command in symbolic Hack assembly code<br/>
+        /// Precondition: Must be initialized<br/>
+        /// Postcondition: Arithmetic is written to output .asm file
+        /// </summary>
+        /// <param name="command"></param>
         public void WriteArithmetic(string command)
         {
             switch (command)
@@ -105,13 +118,13 @@ namespace VMTranslator
                     "@SP\n" +
                     "A=M\n" +
                     "M=0\n" +
-                    $"@ENDEQ{LabelIndex}\n" +
+                    $"@ENDGT{LabelIndex}\n" +
                     "0;JMP\n" +
                     $"(TRUE{LabelIndex})\n" +
                     "@SP\n" +
                     "A=M\n" +
                     "M=-1\n" +
-                    $"(ENDEQ{LabelIndex})\n" +
+                    $"(ENDGT{LabelIndex})\n" +
                     "@SP\n" +
                     "M=M+1"
                         );
@@ -132,13 +145,13 @@ namespace VMTranslator
                     "@SP\n" +
                     "A=M\n" +
                     "M=0\n" +
-                    $"@ENDEQ{LabelIndex}\n" +
+                    $"@ENDLT{LabelIndex}\n" +
                     "0;JMP\n" +
                     $"(TRUE{LabelIndex})\n" +
                     "@SP\n" +
                     "A=M\n" +
                     "M=-1\n" +
-                    $"(ENDEQ{LabelIndex})\n" +
+                    $"(ENDLT{LabelIndex})\n" +
                     "@SP\n" +
                     "M=M+1"
                         );
@@ -197,11 +210,18 @@ namespace VMTranslator
                     );
                     break;
                 default:
-                    Console.WriteLine("ErRoR:::::: default has been reached in the write arithmetic method.");
                     break;
             }
         }
 
+        /// <summary>
+        /// Description: Writes the vm push or pop command in symbolic Hack assembly code<br/>
+        /// Precondition: Must be initialized<br/>
+        /// Postcondition: The push/pop logic is written to output .asm file
+        /// </summary>
+        /// <param name="commandType"></param>
+        /// <param name="segment"></param>
+        /// <param name="index"></param>
         public void WritePushPop(CommandType commandType, string segment, int index)
         {
             outputFile.WriteLine($"// {commandType} {segment} {index}");
@@ -321,15 +341,30 @@ namespace VMTranslator
             }
         }
 
-        public void TerminateWithLoop()
+        /// <summary>
+        /// Description: Closes codewriter<br/>
+        /// Precondition: Must be initialized<br/>
+        /// Postcondition: Output streamwriter is closed
+        /// </summary>
+        public void Close()
         {
             outputFile.WriteLine(
                 "// INFINITE LOOP\n" +
                 "(LOOP)\n" +
                 "@LOOP\n" +
                 "0;JMP");
+            outputFile.Close();
         }
+        #endregion
 
+        #region Private Helper Methods
+        /// <summary>
+        /// Description: Looks up the corresponding segment hack symbol<br/>
+        /// Precondition: None<br/>
+        /// Postcondition: Hack symbol is looked up
+        /// </summary>
+        /// <param name="segment"></param>
+        /// <returns>Hack symbol corresponding to given vm segment</returns>
         private static string LookupSegmentASM(string segment)
         {
             new Dictionary<string, string>()
@@ -344,6 +379,11 @@ namespace VMTranslator
             return value;
         }
 
+        /// <summary>
+        /// Description: Maps the memory segments to particular base addresses in the beginning of the output asm file<br/>
+        /// Precondition: Must be initialized<br/>
+        /// Postcondition: Memory segments are mapped to output file
+        /// </summary>
         private void MapMemorySegments()
         {
             outputFile.WriteLine(
@@ -373,11 +413,7 @@ namespace VMTranslator
                 "@THAT\n" +
                 "M=D"
                 );
-        }
-
-        public void Close()
-        {
-            outputFile.Close();
-        }
+        } 
+        #endregion
     }
 }

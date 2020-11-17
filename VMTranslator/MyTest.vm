@@ -1,6 +1,0 @@
-push constant 10 
-push constant 24
-push constant 35
-pop local 3
-pop local 1
-pop local 4

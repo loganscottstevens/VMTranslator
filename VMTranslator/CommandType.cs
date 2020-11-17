@@ -1,9 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿#region Author Info
+// ===============================
+// AUTHOR          :Logan Stevens
+// CREATE DATE     :11/9/20
+//================================ 
+#endregion
 namespace VMTranslator
 {
+    /// <summary>
+    /// Helpful enum to help with command types for conditional operations
+    /// </summary>
     public enum CommandType
     {
         C_ARITHMETIC,

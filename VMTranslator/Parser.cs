@@ -1,49 +1,58 @@
-﻿using System;
+﻿#region Author Info
+// ===============================
+// AUTHOR          :Logan Stevens
+// CREATE DATE     :11/9/20
+//================================ 
+#endregion
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace VMTranslator
 {
     class Parser
     {
-        private string currentLine;
-        private StreamReader inputFile;
-
-        // PROPERTIES
+        #region Properties
+        private string CurrentLine { get; set; }
+        private StreamReader InputFile { get; set; }
         public CommandType CommandType { get; private set; }
         public string Arg1 { get; private set; }
-        public int Arg2 { get; private set; }
+        public int Arg2 { get; private set; } 
+        #endregion
 
-        // STATIC VARIABLES
-        // Regular expression for any string which is either a comment or white space
-        private static Regex whiteSpaceOrComments = new Regex("^\\s*$|\\s*//.*");
+        #region Static Variables
+        private static readonly Regex whiteSpaceOrComments = new Regex("^\\s*$|\\s*//.*");
+        #endregion
 
-        // CONSTRUCTOR
+        #region Constructor
         public Parser(string fileName)
         {
-            inputFile = new StreamReader(fileName);
-        }
+            InputFile = new StreamReader(fileName);
+        } 
+        #endregion
 
-        // METHODS
+        #region Public Methods
+        /// <summary>
+        /// Description: Advances parser by one line in the input file<br/>
+        /// Precondition: Parser has been initialized with a valid filepath to .vm file<br/>
+        /// Postcondition: Properties are updated<br/>
+        /// </summary>
         public void Advance()
         {
             do
             {
-                currentLine = inputFile.ReadLine();
-                if (currentLine == null)
+                CurrentLine = InputFile.ReadLine();
+                if (CurrentLine == null)
                 {
                     Console.WriteLine("string currentLine is null, end of file reached.");
                     Console.ReadLine();
                     return;
                 }
+                CurrentLine = whiteSpaceOrComments.Replace(CurrentLine, string.Empty).Trim();
+            } while (CurrentLine == string.Empty);
 
-                // Remove comments and empty lines
-                currentLine = whiteSpaceOrComments.Replace(currentLine, string.Empty).Trim();
-            } while (currentLine == string.Empty);
-
-            string[] args = currentLine.Split(" ");
+            string[] args = CurrentLine.Split(" ");
             if (args.Length == 1)
             {
                 CommandType = CommandType.C_ARITHMETIC;
@@ -71,20 +80,41 @@ namespace VMTranslator
             }
         }
 
+        /// <summary>
+        /// Description: Determines if input file has more lines to parse<br/>
+        /// Precondition: InputFile in not null<br/>
+        /// Postcondition: End of file can be determined<br/>
+        /// </summary>
+        /// <returns>True if there are more commands in input file</returns>
         public bool HasMoreCommands()
         {
-            return !inputFile.EndOfStream;
+            return !InputFile.EndOfStream;
         }
 
+        /// <summary>
+        /// Description: Shows parser's current state as a string<br/>
+        /// Precondition: A parser must be instantiated<br/>
+        /// Postcondition: A string representation is returned<br/>
+        /// </summary>
+        /// <returns>string of the current command's lexical elements</returns>
         public string ToString()
         {
             return
-                $"CurrentLine = {currentLine}\n" +
+                $"CurrentLine = {CurrentLine}\n" +
                 $"CommandType = {CommandType}\n" +
                 $"Arg1 = {Arg1}\n" +
                 $"Arg2 = {Arg2}\n";
         }
+        #endregion
 
+        #region Static Methods
+        /// <summary>
+        /// Description: Looks up command type from vm file command segment<br/>
+        /// Precondition: A parser must be instantiated<br/>
+        /// Postcondition: A CommandType is returned<br/>
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns>CommandType enumeration of given string</returns>
         public static CommandType LookupCommandType(string command)
         {
             Dictionary<string, CommandType> keyValuePairs = new Dictionary<string, CommandType>()
@@ -98,5 +128,6 @@ namespace VMTranslator
             keyValuePairs.TryGetValue(command, out CommandType value);
             return value;
         }
+        #endregion
     }
 }
