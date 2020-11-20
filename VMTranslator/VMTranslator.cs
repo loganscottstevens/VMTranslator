@@ -33,6 +33,7 @@ namespace VMTranslator
         static void Main()
         {
             #region FileIO
+            Console.WriteLine("Enter directory or filename:");
             string filePath = Path.GetFullPath(Console.ReadLine());
             string[] files = { };
             CodeWriter codeWriter = null;
@@ -61,6 +62,8 @@ namespace VMTranslator
                 while (parser.HasMoreCommands())
                 {
                     parser.Advance();
+                    Console.WriteLine(parser.ToString());
+                    Console.ReadLine();
                     switch (parser.CommandType)
                     {
                         case CommandType.C_ARITHMETIC:
@@ -70,12 +73,27 @@ namespace VMTranslator
                         case CommandType.C_POP:
                             codeWriter.WritePushPop(parser.CommandType, parser.Arg1, parser.Arg2);
                             break;
+                        case CommandType.C_LABEL:
+                            codeWriter.WriteLabel(parser.Arg1);
+                            break;
+                        case CommandType.C_GOTO:
+                            codeWriter.WriteGoto(parser.Arg1);
+                            break;
+                        case CommandType.C_IF:
+                            codeWriter.WriteIf(parser.Arg1);
+                            break;
+                        case CommandType.C_FUNCTION:
+                            break;
+                        case CommandType.C_RETURN:
+                            break;
+                        case CommandType.C_CALL:
+                            break;
                         default:
                             break;
                     }
                 }
             }
-            codeWriter.Close(); 
+            codeWriter.Close();
             #endregion
         }
     }

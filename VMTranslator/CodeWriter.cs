@@ -39,8 +39,7 @@ namespace VMTranslator
             switch (command)
             {
                 case "add":
-                    outputFile.WriteLine
-                        (
+                    outputFile.WriteLine(
                         "// ADD\n" +
                         "@SP\n" +
                         "M=M-1\n" +
@@ -54,12 +53,10 @@ namespace VMTranslator
                         "A=M\n" +
                         "M=D\n" +
                         "@SP\n" +
-                        "M=M+1"
-                        );
+                        "M=M+1");
                     break;
                 case "sub":
-                    outputFile.WriteLine
-                        (
+                    outputFile.WriteLine(
                         "// SUB\n" +
                         "@SP\n" +
                         "M=M-1\n" +
@@ -73,88 +70,84 @@ namespace VMTranslator
                         "A=M\n" +
                         "M=D\n" +
                         "@SP\n" +
-                        "M=M+1"
-                        );
+                        "M=M+1");
                     break;
                 case "eq":
                     outputFile.WriteLine(
-                    "@SP\n" +
-                    "M=M-1\n" +
-                    "A=M\n" +
-                    "D=M\n" +
-                    "@SP\n" +
-                    "M=M-1\n" +
-                    "A=M\n" +
-                    "D=M-D\n" +
-                    $"@TRUE{LabelIndex}\n" +
-                    "D;JEQ\n" +
-                    "@SP\n" +
-                    "A=M\n" +
-                    "M=0\n" +
-                    $"@ENDEQ{LabelIndex}\n" +
-                    "0;JMP\n" +
-                    $"(TRUE{LabelIndex})\n" +
-                    "@SP\n" +
-                    "A=M\n" +
-                    "M=-1\n" +
-                    $"(ENDEQ{LabelIndex})\n" +
-                    "@SP\n" +
-                    "M=M+1"
-                        );
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M\n" +
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M-D\n" +
+                        $"@TRUE{LabelIndex}\n" +
+                        "D;JEQ\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=0\n" +
+                        $"@ENDEQ{LabelIndex}\n" +
+                        "0;JMP\n" +
+                        $"(TRUE{LabelIndex})\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=-1\n" +
+                        $"(ENDEQ{LabelIndex})\n" +
+                        "@SP\n" +
+                        "M=M+1");
                     LabelIndex++;
                     break;
                 case "gt":
                     outputFile.WriteLine(
-                    "@SP\n" +
-                    "M=M-1\n" +
-                    "A=M\n" +
-                    "D=M\n" +
-                    "@SP\n" +
-                    "M=M-1\n" +
-                    "A=M\n" +
-                    "D=M-D\n" +
-                    $"@TRUE{LabelIndex}\n" +
-                    "D;JGT\n" +
-                    "@SP\n" +
-                    "A=M\n" +
-                    "M=0\n" +
-                    $"@ENDGT{LabelIndex}\n" +
-                    "0;JMP\n" +
-                    $"(TRUE{LabelIndex})\n" +
-                    "@SP\n" +
-                    "A=M\n" +
-                    "M=-1\n" +
-                    $"(ENDGT{LabelIndex})\n" +
-                    "@SP\n" +
-                    "M=M+1"
-                        );
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M\n" +
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M-D\n" +
+                        $"@TRUE{LabelIndex}\n" +
+                        "D;JGT\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=0\n" +
+                        $"@ENDGT{LabelIndex}\n" +
+                        "0;JMP\n" +
+                        $"(TRUE{LabelIndex})\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=-1\n" +
+                        $"(ENDGT{LabelIndex})\n" +
+                        "@SP\n" +
+                        "M=M+1");
                     LabelIndex++;
                     break;
                 case "lt":
                     outputFile.WriteLine(
-                    "@SP\n" +
-                    "M=M-1\n" +
-                    "A=M\n" +
-                    "D=M\n" +
-                    "@SP\n" +
-                    "M=M-1\n" +
-                    "A=M\n" +
-                    "D=M-D\n" +
-                    $"@TRUE{LabelIndex}\n" +
-                    "D;JLT\n" +
-                    "@SP\n" +
-                    "A=M\n" +
-                    "M=0\n" +
-                    $"@ENDLT{LabelIndex}\n" +
-                    "0;JMP\n" +
-                    $"(TRUE{LabelIndex})\n" +
-                    "@SP\n" +
-                    "A=M\n" +
-                    "M=-1\n" +
-                    $"(ENDLT{LabelIndex})\n" +
-                    "@SP\n" +
-                    "M=M+1"
-                        );
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M\n" +
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M-D\n" +
+                        $"@TRUE{LabelIndex}\n" +
+                        "D;JLT\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=0\n" +
+                        $"@ENDLT{LabelIndex}\n" +
+                        "0;JMP\n" +
+                        $"(TRUE{LabelIndex})\n" +
+                        "@SP\n" +
+                        "A=M\n" +
+                        "M=-1\n" +
+                        $"(ENDLT{LabelIndex})\n" +
+                        "@SP\n" +
+                        "M=M+1");
                     LabelIndex++;
                     break;
                 case "neg":
@@ -164,8 +157,7 @@ namespace VMTranslator
                         "A=M\n" +
                         "M=-M\n" +
                         "@SP\n" +
-                        "M=M+1\n"
-                    );
+                        "M=M+1");
                     break;
                 case "and":
                     outputFile.WriteLine(
@@ -206,8 +198,7 @@ namespace VMTranslator
                         "A=M\n" +
                         "M=!M\n" +
                         "@SP\n" +
-                        "M=M+1\n"
-                    );
+                        "M=M+1");
                     break;
                 default:
                     break;
@@ -339,6 +330,87 @@ namespace VMTranslator
                 );
 
             }
+        }
+
+        /// <summary>
+        /// Description: Writes assembly code that effects the VM initialization.
+        /// </summary>
+        public void WriteInit()
+        {
+
+        }
+
+        /// <summary>
+        /// Description: Writes assembly code that effects the label command.<br/>
+        /// Precondition: Must be initialized.<br/>
+        /// Postcondition: Label is written to output .asm file
+        /// </summary>
+        /// <param name="label"></param>
+        public void WriteLabel(string label)
+        {
+            outputFile.WriteLine(
+                $"// LABEL {label}\n" +
+                $"({label})");
+        }
+
+        /// <summary>
+        /// Description: Writes assembly code that effects the goto command.<br/>
+        /// Precondition: Must be initialized.<br/>
+        /// Postcondition: Goto command is written to output .asm file
+        /// </summary>
+        /// <param name="label"></param>
+        public void WriteGoto(string label)
+        {
+            outputFile.WriteLine(
+                $"// GOTO {label}\n" +
+                $"@{label}\n" +
+                "0;JMP");
+        }
+
+        /// <summary>
+        /// Description: Writes assembly code that effects the if-goto command.<br/>
+        /// Precondition: Must be initialized.<br/>
+        /// Postcondition: If-Goto command is written to output .asm file
+        /// </summary>
+        /// <param name="label"></param>
+        public void WriteIf(string label)
+        {
+            outputFile.WriteLine(
+                $"// IF-GOTO {label}\n" +
+                "@SP\n" +
+                "M=M-1\n" +
+                "A=M\n" +
+                "D=M\n" +
+                $"@{label}\n" +
+                "D;JNE");
+        }
+
+        /// <summary>
+        /// Description: Writes assembly code that effects the call command.
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <param name="numArgs"></param>
+        public void WriteCall(string functionName, int numArgs)
+        {
+
+        }
+
+        /// <summary>
+        /// Description: Writes assembly code that effects the return command.
+        /// </summary>
+        public void WriteReturn()
+        {
+
+        }
+
+        /// <summary>
+        /// Description: Writes assembly code that effects the function command.
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <param name="numLocals"></param>
+        public void WriteFunction(string functionName, int numLocals)
+        {
+
         }
 
         /// <summary>

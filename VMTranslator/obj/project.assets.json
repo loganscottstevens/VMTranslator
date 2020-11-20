@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\logan\\Documents\\Coding Workspaces\\VMTranslator\\VMTranslator\\VMTranslator.csproj",
+      "projectUniqueName": "C:\\Users\\logan\\Programming Repositories\\C#\\VMTranslator\\VMTranslator\\VMTranslator.csproj",
       "projectName": "VMTranslator",
-      "projectPath": "C:\\Users\\logan\\Documents\\Coding Workspaces\\VMTranslator\\VMTranslator\\VMTranslator.csproj",
+      "projectPath": "C:\\Users\\logan\\Programming Repositories\\C#\\VMTranslator\\VMTranslator\\VMTranslator.csproj",
       "packagesPath": "C:\\Users\\logan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\logan\\Documents\\Coding Workspaces\\VMTranslator\\VMTranslator\\obj\\",
+      "outputPath": "C:\\Users\\logan\\Programming Repositories\\C#\\VMTranslator\\VMTranslator\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

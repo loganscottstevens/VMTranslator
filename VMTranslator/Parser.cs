@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace VMTranslator
 {
@@ -52,7 +53,41 @@ namespace VMTranslator
                 CurrentLine = whiteSpaceOrComments.Replace(CurrentLine, string.Empty).Trim();
             } while (CurrentLine == string.Empty);
 
-            string[] args = CurrentLine.Split(" ");
+            string[] args = CurrentLine.Split(" ");     //  Ex. push constant 1
+            /**/
+            CommandType = LookupCommandType(args[0]);
+            switch (CommandType)
+            {
+                // One-argument commands
+                case CommandType.C_ARITHMETIC:
+                    Arg1 = args[0];
+                    Arg2 = -1;
+                    break;
+                case CommandType.C_RETURN:
+                    Arg1 = "No Arg1";
+                    Arg2 = -1;
+                    break;
+                // Two-argument commands
+                case CommandType.C_LABEL:
+                case CommandType.C_IF:
+                case CommandType.C_GOTO:
+                    Arg1 = args[1];
+                    Arg2 = -1;
+                    break;
+                // Three-argument commands
+                case CommandType.C_PUSH:
+                case CommandType.C_POP:
+                case CommandType.C_FUNCTION:
+                case CommandType.C_CALL:
+                    Arg1 = args[1];
+                    Arg2 = int.Parse(args[2]);
+                    break;
+                // Error
+                default:
+                    Console.WriteLine("Error: No command type found.");
+                    break;
+            }
+            /**
             if (args.Length == 1)
             {
                 CommandType = CommandType.C_ARITHMETIC;
@@ -78,6 +113,7 @@ namespace VMTranslator
                     }
                 }
             }
+            /**/
         }
 
         /// <summary>
@@ -122,12 +158,26 @@ namespace VMTranslator
                 {"push", CommandType.C_PUSH },
                 {"pop", CommandType.C_POP },
                 {"add", CommandType.C_ARITHMETIC},
-                {"sub", CommandType.C_ARITHMETIC }
-
+                {"sub", CommandType.C_ARITHMETIC },
+                {"eq", CommandType.C_ARITHMETIC },
+                {"gt", CommandType.C_ARITHMETIC },
+                {"lt", CommandType.C_ARITHMETIC },
+                {"neg", CommandType.C_ARITHMETIC },
+                {"and", CommandType.C_ARITHMETIC },
+                {"or", CommandType.C_ARITHMETIC },
+                {"not", CommandType.C_ARITHMETIC },
+                {"label", CommandType.C_LABEL },
+                {"goto", CommandType.C_GOTO },
+                {"if-goto", CommandType.C_IF },
+                {"function", CommandType.C_FUNCTION },
+                {"call", CommandType.C_CALL },
+                {"return", CommandType.C_RETURN }
             };
             keyValuePairs.TryGetValue(command, out CommandType value);
             return value;
         }
+
+
         #endregion
     }
 }

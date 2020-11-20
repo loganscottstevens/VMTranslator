@@ -22,6 +22,54 @@
             <param name="segment"></param>
             <param name="index"></param>
         </member>
+        <member name="M:VMTranslator.CodeWriter.WriteInit">
+            <summary>
+            Description: Writes assembly code that effects the VM initialization.
+            </summary>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.WriteLabel(System.String)">
+            <summary>
+            Description: Writes assembly code that effects the label command.<br/>
+            Precondition: Must be initialized.<br/>
+            Postcondition: Label is written to output .asm file
+            </summary>
+            <param name="label"></param>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.WriteGoto(System.String)">
+            <summary>
+            Description: Writes assembly code that effects the goto command.<br/>
+            Precondition: Must be initialized.<br/>
+            Postcondition: Goto command is written to output .asm file
+            </summary>
+            <param name="label"></param>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.WriteIf(System.String)">
+            <summary>
+            Description: Writes assembly code that effects the if-goto command.<br/>
+            Precondition: Must be initialized.<br/>
+            Postcondition: If-Goto command is written to output .asm file
+            </summary>
+            <param name="label"></param>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.WriteCall(System.String,System.Int32)">
+            <summary>
+            Description: Writes assembly code that effects the call command.
+            </summary>
+            <param name="functionName"></param>
+            <param name="numArgs"></param>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.WriteReturn">
+            <summary>
+            Description: Writes assembly code that effects the return command.
+            </summary>
+        </member>
+        <member name="M:VMTranslator.CodeWriter.WriteFunction(System.String,System.Int32)">
+            <summary>
+            Description: Writes assembly code that effects the function command.
+            </summary>
+            <param name="functionName"></param>
+            <param name="numLocals"></param>
+        </member>
         <member name="M:VMTranslator.CodeWriter.Close">
             <summary>
             Description: Closes codewriter<br/>

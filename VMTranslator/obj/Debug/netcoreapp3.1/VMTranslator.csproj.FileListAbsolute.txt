@@ -12,3 +12,17 @@ C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\obj\Debug\n
 C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.pdb
 C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.genruntimeconfig.cache
 C:\Users\logan\Documents\Coding Workspaces\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.xml
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.exe
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.deps.json
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.runtimeconfig.json
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.runtimeconfig.dev.json
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.dll
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.pdb
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\bin\Debug\netcoreapp3.1\VMTranslator.xml
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.csprojAssemblyReference.cache
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.AssemblyInfoInputs.cache
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.AssemblyInfo.cs
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.csproj.CoreCompileInputs.cache
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.dll
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.pdb
+C:\Users\logan\Programming Repositories\C#\VMTranslator\VMTranslator\obj\Debug\netcoreapp3.1\VMTranslator.genruntimeconfig.cache
