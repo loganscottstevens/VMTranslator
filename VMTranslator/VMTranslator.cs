@@ -62,8 +62,6 @@ namespace VMTranslator
                 while (parser.HasMoreCommands())
                 {
                     parser.Advance();
-                    Console.WriteLine(parser.ToString());
-                    Console.ReadLine();
                     switch (parser.CommandType)
                     {
                         case CommandType.C_ARITHMETIC:
@@ -83,10 +81,13 @@ namespace VMTranslator
                             codeWriter.WriteIf(parser.Arg1);
                             break;
                         case CommandType.C_FUNCTION:
+                            codeWriter.WriteFunction(parser.Arg1, parser.Arg2);
                             break;
                         case CommandType.C_RETURN:
+                            codeWriter.WriteReturn();
                             break;
                         case CommandType.C_CALL:
+                            codeWriter.WriteCall(parser.Arg1, parser.Arg2);
                             break;
                         default:
                             break;

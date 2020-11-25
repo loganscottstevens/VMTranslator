@@ -24,6 +24,28 @@ namespace VMTranslator
 
         #region Static Variables
         private static readonly Regex whiteSpaceOrComments = new Regex("^\\s*$|\\s*//.*");
+
+        private static Dictionary<string, CommandType> CommandTypesDictionary { get; } =
+            new Dictionary<string, CommandType>()
+            {
+                {"push", CommandType.C_PUSH },
+                {"pop", CommandType.C_POP },
+                {"add", CommandType.C_ARITHMETIC},
+                {"sub", CommandType.C_ARITHMETIC },
+                {"eq", CommandType.C_ARITHMETIC },
+                {"gt", CommandType.C_ARITHMETIC },
+                {"lt", CommandType.C_ARITHMETIC },
+                {"neg", CommandType.C_ARITHMETIC },
+                {"and", CommandType.C_ARITHMETIC },
+                {"or", CommandType.C_ARITHMETIC },
+                {"not", CommandType.C_ARITHMETIC },
+                {"label", CommandType.C_LABEL },
+                {"goto", CommandType.C_GOTO },
+                {"if-goto", CommandType.C_IF },
+                {"function", CommandType.C_FUNCTION },
+                {"call", CommandType.C_CALL },
+                {"return", CommandType.C_RETURN }
+            };
         #endregion
 
         #region Constructor
@@ -53,8 +75,7 @@ namespace VMTranslator
                 CurrentLine = whiteSpaceOrComments.Replace(CurrentLine, string.Empty).Trim();
             } while (CurrentLine == string.Empty);
 
-            string[] args = CurrentLine.Split(" ");     //  Ex. push constant 1
-            /**/
+            string[] args = CurrentLine.Split(" ");
             CommandType = LookupCommandType(args[0]);
             switch (CommandType)
             {
@@ -87,33 +108,6 @@ namespace VMTranslator
                     Console.WriteLine("Error: No command type found.");
                     break;
             }
-            /**
-            if (args.Length == 1)
-            {
-                CommandType = CommandType.C_ARITHMETIC;
-                Arg1 = args[0];
-                Arg2 = -1;
-
-            }
-            else
-            {
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (i == 0)
-                    {
-                        CommandType = LookupCommandType(args[i]);
-                    }
-                    else if (i == 1)
-                    {
-                        Arg1 = args[i];
-                    }
-                    else if (i == 2)
-                    {
-                        Arg2 = int.Parse(args[i]);
-                    }
-                }
-            }
-            /**/
         }
 
         /// <summary>
@@ -153,31 +147,9 @@ namespace VMTranslator
         /// <returns>CommandType enumeration of given string</returns>
         public static CommandType LookupCommandType(string command)
         {
-            Dictionary<string, CommandType> keyValuePairs = new Dictionary<string, CommandType>()
-            {
-                {"push", CommandType.C_PUSH },
-                {"pop", CommandType.C_POP },
-                {"add", CommandType.C_ARITHMETIC},
-                {"sub", CommandType.C_ARITHMETIC },
-                {"eq", CommandType.C_ARITHMETIC },
-                {"gt", CommandType.C_ARITHMETIC },
-                {"lt", CommandType.C_ARITHMETIC },
-                {"neg", CommandType.C_ARITHMETIC },
-                {"and", CommandType.C_ARITHMETIC },
-                {"or", CommandType.C_ARITHMETIC },
-                {"not", CommandType.C_ARITHMETIC },
-                {"label", CommandType.C_LABEL },
-                {"goto", CommandType.C_GOTO },
-                {"if-goto", CommandType.C_IF },
-                {"function", CommandType.C_FUNCTION },
-                {"call", CommandType.C_CALL },
-                {"return", CommandType.C_RETURN }
-            };
-            keyValuePairs.TryGetValue(command, out CommandType value);
+            CommandTypesDictionary.TryGetValue(command, out CommandType value); 
             return value;
         }
-
-
         #endregion
     }
 }

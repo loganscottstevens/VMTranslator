@@ -51,6 +51,13 @@
             </summary>
             <param name="label"></param>
         </member>
+        <member name="M:VMTranslator.CodeWriter.WriteFunction(System.String,System.Int32)">
+            <summary>
+            Description: Writes assembly code that effects the function command.
+            </summary>
+            <param name="functionName"></param>
+            <param name="numLocals"></param>
+        </member>
         <member name="M:VMTranslator.CodeWriter.WriteCall(System.String,System.Int32)">
             <summary>
             Description: Writes assembly code that effects the call command.
@@ -62,13 +69,6 @@
             <summary>
             Description: Writes assembly code that effects the return command.
             </summary>
-        </member>
-        <member name="M:VMTranslator.CodeWriter.WriteFunction(System.String,System.Int32)">
-            <summary>
-            Description: Writes assembly code that effects the function command.
-            </summary>
-            <param name="functionName"></param>
-            <param name="numLocals"></param>
         </member>
         <member name="M:VMTranslator.CodeWriter.Close">
             <summary>

@@ -18,12 +18,22 @@ namespace VMTranslator
         public string FileName { get; set; }
         #endregion
 
-        #region Constructors
-        public CodeWriter(string fileName)
+        private static Dictionary<string,string> aSMPointers = new Dictionary<string, string>()
+                {
+                    {"local", "LCL" },
+                    {"argument", "ARG" },
+                    {"this", "THIS" },
+                    {"that", "THAT" },
+                    {"temp", "R5" },
+                    {"pointer", "THIS" }
+                };
+
+    #region Constructors
+    public CodeWriter(string fileName)
         {
             OutputFileDir = fileName;
             outputFile = new StreamWriter(fileName);
-            MapMemorySegments();
+            WriteInit();
         }
         #endregion
 
@@ -264,11 +274,9 @@ namespace VMTranslator
                               );
                         break;
                     default:
-                        outputFile.WriteLine
-                            (
-                            "@" + LookupSegmentASM(segment) + "\n" +
-                            "A=M"
-                            );
+                        outputFile.WriteLine(
+                            $"@{LookupSegmentASM(segment)}\n" +
+                            "A=M");
                         for (int i = 0; i < index; i++)
                         {
                             outputFile.WriteLine("A=A+1");
@@ -289,15 +297,12 @@ namespace VMTranslator
             {
                 if (segment != "static")
                 {
-                    outputFile.WriteLine
-                    (
-
-                    "@SP\n" +
-                    "M=M-1\n" +
-                    "A=M\n" +
-                    "D=M\n" +
-                    "@" + LookupSegmentASM(segment)
-                    );
+                    outputFile.WriteLine(
+                        "@SP\n" +
+                        "M=M-1\n" +
+                        "A=M\n" +
+                        "D=M\n" +
+                        "@" + LookupSegmentASM(segment));
                 }
                 else
                 {
@@ -337,7 +342,8 @@ namespace VMTranslator
         /// </summary>
         public void WriteInit()
         {
-
+            MapMemorySegments();
+            WriteCall("Sys.init", 0);
         }
 
         /// <summary>
@@ -386,13 +392,84 @@ namespace VMTranslator
         }
 
         /// <summary>
+        /// Description: Writes assembly code that effects the function command.
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <param name="numLocals"></param>
+        public void WriteFunction(string functionName, int numLocals)
+        {
+            WriteLabel(functionName);
+            for (int i = 0; i < numLocals; i++)
+            {
+                WritePushPop(CommandType.C_PUSH, "constant", 0);
+            }
+        }
+
+        /// <summary>
         /// Description: Writes assembly code that effects the call command.
         /// </summary>
         /// <param name="functionName"></param>
         /// <param name="numArgs"></param>
         public void WriteCall(string functionName, int numArgs)
         {
-
+            outputFile.WriteLine(
+                "// PUSH RETURN ADDRESS\n" +
+                $"@{FileName}$ret.{LabelIndex}\n" +
+                "D=A\n" +
+                "@SP\n" +
+                "A=M\n" +
+                "M=D\n" +
+                "@SP\n" +
+                "M=M+1\n" +
+                "// PUSH LCL\n" +
+                "@LCL\n" +
+                "D=M\n" +
+                "@SP\n" +
+                "A=M\n" +
+                "M=D\n" +
+                "@SP\n" +
+                "M=M+1\n" +
+                "// PUSH ARG\n" +
+                "@ARG\n" +
+                "D=M\n" +
+                "@SP\n" +
+                "A=M\n" +
+                "M=D\n" +
+                "@SP\n" +
+                "M=M+1\n" +
+                "// PUSH THIS\n" +
+                "@THIS\n" +
+                "D=M\n" +
+                "@SP\n" +
+                "A=M\n" +
+                "M=D\n" +
+                "@SP\n" +
+                "M=M+1\n" +
+                "// PUSH THAT\n" +
+                "@THAT\n" +
+                "D=M\n" +
+                "@SP\n" +
+                "A=M\n" +
+                "M=D\n" +
+                "@SP\n" +
+                "M=M+1\n" +
+                "// ARG = SP-5-NARGS\n" +
+                $"@{numArgs}\n" +
+                "D=A\n" +
+                "@5\n" +
+                "D=D+A\n" +
+                "@SP\n" +
+                "D=M-D\n" +
+                "@ARG\n" +
+                "M=D\n" +
+                "// LCL = SP\n" +
+                "@SP\n" +
+                "D=M\n" +
+                "@LCL\n" +
+                "M=D");
+            WriteGoto(functionName);
+            WriteLabel($"{FileName}$ret.{LabelIndex}");
+            LabelIndex++;
         }
 
         /// <summary>
@@ -400,17 +477,55 @@ namespace VMTranslator
         /// </summary>
         public void WriteReturn()
         {
-
-        }
-
-        /// <summary>
-        /// Description: Writes assembly code that effects the function command.
-        /// </summary>
-        /// <param name="functionName"></param>
-        /// <param name="numLocals"></param>
-        public void WriteFunction(string functionName, int numLocals)
-        {
-
+            outputFile.WriteLine(
+                "// WRITE RETURN\n" +
+                "@LCL\n" +
+                "D=M\n" +
+                $"@endFrame.{LabelIndex}\n" +
+                "M=D\n" +
+                $"@endFrame.{LabelIndex}\n" +
+                "D=M\n" +
+                "@5\n" +
+                "D=D-A\n" +
+                "A=D\n" +
+                "D=M\n" +
+                $"@returnAddress.{LabelIndex}\n" +
+                "M=D");
+            WritePushPop(CommandType.C_POP, "argument", 0);
+            outputFile.WriteLine(
+                "D=A\n" +
+                "@SP\n" +
+                "M=D+1\n" +
+                $"@endFrame.{LabelIndex}\n" +
+                "A=M-1\n" +
+                "D=M\n" +
+                "@THAT\n" +
+                "M=D\n" +
+                "@2\n" +
+                "D=A\n" +
+                $"@endFrame.{LabelIndex}\n" +
+                "A=M-D\n" +
+                "D=M\n" +
+                "@THIS\n" +
+                "M=D\n" +
+                "@3\n" +
+                "D=A\n" +
+                $"@endFrame.{LabelIndex}\n" +
+                "A=M-D\n" +
+                "D=M\n" +
+                "@ARG\n" +
+                "M=D\n" +
+                "@4\n" +
+                "D=A\n" +
+                $"@endFrame.{LabelIndex}\n" +
+                "A=M-D\n" +
+                "D=M\n" +
+                "@LCL\n" +
+                "M=D\n" +
+                $"@returnAddress.{LabelIndex}\n" +
+                "A=M\n" +
+                "0;JMP");
+            LabelIndex++;
         }
 
         /// <summary>
@@ -420,11 +535,6 @@ namespace VMTranslator
         /// </summary>
         public void Close()
         {
-            outputFile.WriteLine(
-                "// INFINITE LOOP\n" +
-                "(LOOP)\n" +
-                "@LOOP\n" +
-                "0;JMP");
             outputFile.Close();
         }
         #endregion
@@ -439,15 +549,7 @@ namespace VMTranslator
         /// <returns>Hack symbol corresponding to given vm segment</returns>
         private static string LookupSegmentASM(string segment)
         {
-            new Dictionary<string, string>()
-                {
-                    {"local", "LCL" },
-                    {"argument", "ARG" },
-                    {"this", "THIS" },
-                    {"that", "THAT" },
-                    {"temp", "R5" },
-                    {"pointer", "THIS" }
-                }.TryGetValue(segment, out string value);
+            aSMPointers.TryGetValue(segment, out string value);
             return value;
         }
 
