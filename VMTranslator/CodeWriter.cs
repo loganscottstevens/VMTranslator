@@ -18,24 +18,26 @@ namespace VMTranslator
         public string FileName { get; set; }
         #endregion
 
-        private static Dictionary<string,string> aSMPointers = new Dictionary<string, string>()
-                {
-                    {"local", "LCL" },
-                    {"argument", "ARG" },
-                    {"this", "THIS" },
-                    {"that", "THAT" },
-                    {"temp", "R5" },
-                    {"pointer", "THIS" }
-                };
-
-    #region Constructors
-    public CodeWriter(string fileName)
+        #region Constants
+        private static readonly Dictionary<string, string> asmPointers = new Dictionary<string, string>()
         {
-            OutputFileDir = fileName;
-            outputFile = new StreamWriter(fileName);
-            WriteInit();
-        }
+            {"local", "LCL" },
+            {"argument", "ARG" },
+            {"this", "THIS" },
+            {"that", "THAT" },
+            {"temp", "R5" },
+            {"pointer", "THIS" }
+        }; 
         #endregion
+
+        #region Constructors
+        public CodeWriter(string fileName)
+        {
+                OutputFileDir = fileName;
+                outputFile = new StreamWriter(fileName);
+                WriteInit();
+        }
+            #endregion
 
         #region Public Methods
         /// <summary>
@@ -549,7 +551,7 @@ namespace VMTranslator
         /// <returns>Hack symbol corresponding to given vm segment</returns>
         private static string LookupSegmentASM(string segment)
         {
-            aSMPointers.TryGetValue(segment, out string value);
+            asmPointers.TryGetValue(segment, out string value);
             return value;
         }
 
@@ -587,7 +589,7 @@ namespace VMTranslator
                 "@THAT\n" +
                 "M=D"
                 );
-        } 
+        }
         #endregion
     }
 }

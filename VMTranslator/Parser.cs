@@ -25,7 +25,7 @@ namespace VMTranslator
         #region Static Variables
         private static readonly Regex whiteSpaceOrComments = new Regex("^\\s*$|\\s*//.*");
 
-        private static Dictionary<string, CommandType> CommandTypesDictionary { get; } =
+        private static readonly Dictionary<string, CommandType> commandTypesDictionary =
             new Dictionary<string, CommandType>()
             {
                 {"push", CommandType.C_PUSH },
@@ -147,7 +147,7 @@ namespace VMTranslator
         /// <returns>CommandType enumeration of given string</returns>
         public static CommandType LookupCommandType(string command)
         {
-            CommandTypesDictionary.TryGetValue(command, out CommandType value); 
+            commandTypesDictionary.TryGetValue(command, out CommandType value); 
             return value;
         }
         #endregion
